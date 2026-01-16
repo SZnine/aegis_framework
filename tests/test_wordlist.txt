@@ -1,0 +1,12 @@
+# 常见的子域名前缀
+www
+api
+dev
+test
+admin
+blog
+# 测试代码，需要被忽略
+# staging
+mail
+
+www
