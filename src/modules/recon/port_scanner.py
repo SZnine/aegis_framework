@@ -5,12 +5,11 @@ from typing import List, Dict
 class PortScanner:
     """Aegis端口扫描器（1.0 TCP全连接）"""
 
-    def __init__(self,target_host:str,target_port:list[int] = None,timeout:float=2.0):
-        self.target_host = target_host
-        self.ports = target_port if target_port else list(range(1,1025))
+    def __init__(self,timeout:float=2.0):
+
         self.timeout = timeout
 
-    def scan_port(self,port:int) -> str:
+    def scan_port(self,target_host :str,port:int) -> str:
         """
         扫描单个端口，方便抛出异常
         返回 'open','closed','filtered'
@@ -23,7 +22,7 @@ class PortScanner:
 
         try:
             #connect_ex 返回0表示成功，否则为错误码
-            result = sock.connect_ex((self.target_host,port))
+            result = sock.connect_ex((target_host,port))
             sock.close()
 
             if result == 0:
@@ -39,15 +38,10 @@ class PortScanner:
             #捕获其他类型错误
             #返回错误信息，便于调试
             return f"error:{e}"
-    def scan(self) -> Dict[int, str]:
+    def scan(self,target_host: str,target_ports: List[int] = None) -> Dict[int, str]:
         """扫描所有端口，返回正确{端口：状态}字典"""
-        results = {}
-        for port in self.ports:
-            status = self.scan_port(port)
-            results[port] = status#这一步就相当于是添加了port进入results吗
-            print(f"{port}:{status}")
-        return results
-    def scan_concurrent(self, max_workers :int = 50) ->Dict[int,str]:
+        return self.scan_concurrent(target_host, target_ports, max_workers=1)
+    def scan_concurrent(self,target_host: str, target_ports:List[int] = None, max_workers :int = 50) ->Dict[int,str]:
         """
         使用线程池进行并发扫描
         :param max_workers:最大工作线程数
@@ -59,7 +53,7 @@ class PortScanner:
             #提交一个扫描任务到线程池
             #建立未来对象到端口的映射
             futures_to_port = {
-                executor.submit(self.scan_port,port):port for port in self.ports
+                executor.submit(self.scan_port,target_host,port):port for port in target_ports
             }
             for future in concurrent.futures.as_completed(futures_to_port):
                 port = futures_to_port[future]
