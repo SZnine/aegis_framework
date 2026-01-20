@@ -1,0 +1,31 @@
+[
+  {
+    "name": "Nginx",
+    "description": "高性能web服务器",
+    "rules":[
+      {
+        "location": "header",
+        "key": "Server",
+        "value": "Nginx",
+        "match_type": "contains"
+      }
+    ]
+  },
+  {
+    "name": "WordPress",
+    "description": "世界上最流行的CMS",
+    "rules":[
+      {
+        "location": "body",
+        "value": "/wp-content/",
+        "match_type": "contains"
+      },
+      {
+        "location": "meta",
+        "key": "generator",
+        "value": "WordPress",
+        "match_type": "contains"
+      }
+    ]
+  }
+]
