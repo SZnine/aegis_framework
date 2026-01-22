@@ -48,6 +48,7 @@ class PortScanner:
         :return:端口状态字典
         """
         results = {}
+        open_ports = {}
         #线程池管理线程
         with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
             #提交一个扫描任务到线程池
@@ -60,7 +61,13 @@ class PortScanner:
                 try:
                     status = future.result()#获取单个端口的扫描结果状态码
                     results[port] = status
+                    if status == 'open':
+                        open_ports[port] = status
+                    else:
+                        print("")
                     print(f"{port}:{status}")#形成正反馈
                 except Exception as exc:
                     print(f"扫描异常：{exc}")
-        return results
+
+        return open_ports
+    #   return results
