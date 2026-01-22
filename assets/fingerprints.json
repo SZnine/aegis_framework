@@ -11,6 +11,17 @@
       }
     ]
   },
+    {
+    "name": "OWASP Juice Shop",
+    "description": "OWASP Juice Shop",
+    "rules":[
+      {
+        "location": "body",
+        "value": "OWASP Juice Shop",
+        "match_type": "contains"
+      }
+    ]
+  },
   {
     "name": "WordPress",
     "description": "世界上最流行的CMS",
